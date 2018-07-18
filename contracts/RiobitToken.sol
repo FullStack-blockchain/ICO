@@ -2,7 +2,7 @@ pragma solidity ^0.4.21;
 
 import 'zeppelin-solidity/contracts/token/ERC20/StandardToken.sol';
 
-contract RioBitToken is StandardToken{
+contract RiobitToken is StandardToken{
     unit public INITIAL_SUPPLY = 1000000;
     string public name = 'RioBitToken';
     string public symbol = 'RBT';

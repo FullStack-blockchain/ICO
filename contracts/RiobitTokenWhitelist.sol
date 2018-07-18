@@ -1,11 +1,23 @@
 pragma solidity ^0.4.21;
 
-contract RioBitTokenWhitelist {
-    address owner;
-    function RioBitTokenWhitelist() public{
+contract RiobitTokenWhitelist {
+     address owner;
+    mapping(bytes32 => bool) whitelist;
+
+    function RioBitTokenWhitelist() public {
         owner = msg.sender;
     }
 
-    mapping(byte32 => bool) whitelist;
+    function register() external {
+        whitelist[keccak256(msg.sender)] = true;
+    }
+
+    function unregister() external {
+        whitelist[keccak256(msg.sender)] = false;
+    }
+
+    function isRegistered(address anAddress) public view returns (bool registered) {
+        return whitelist[keccak256(anAddress)];
+    }
     
 }
