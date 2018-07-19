@@ -1,21 +1,24 @@
 pragma solidity ^0.4.21;
 
-import 'zeppelin-solidity/contracts/token/ERC20/StandardToken.sol';
+//This is the contract that will be unchangeable once deployed. It will call delegate functions in another contract to change state.  The delegate contract is upgradable.
 
-contract RiobitToken is StandardToken{
+import 'zeppelin-solidity/contracts/token/ERC20/StandardToken.sol';
+import 'zeppelin-solidity/contracts/token/BurnableToken.sol';
+
+contract RiobitToken is BurnableToken{
     unit public INITIAL_SUPPLY = 1000000;
     string public name = 'RioBitToken';
     string public symbol = 'RBT';
     uint8 public decimals = 8;
-    address owner;
+    address public owner;
+    bool public released = false;
 
     function RioBitToken() public {
-    totalSupply_ = INITIAL_SUPPLY * 10 ** uint(decimals);  //total tokens
-    balances[msg.sender] = INITIAL_SUPPLY;  //owner have total tokens at first
-    owner = msg.sender;
+        totalSupply_ = INITIAL_SUPPLY //* 10 ** uint(decimals);  //total tokens
+        owner = msg.sender;
+        balances[owner] = INITIAL_SUPPLY;  //owner have total tokens at first    
     }
 
-    bool public released = false;
 
     function release() public {
         require(owner == msg.sender);
@@ -26,6 +29,16 @@ contract RiobitToken is StandardToken{
     modifier onlyReleased() {
         require(released);
         _;
+    }
+
+    modifier onlyOwner(){
+        require(msg.sender == owner);
+        _;
+    }
+
+    function burn(uint256 value) public onlyOwner {
+        //Call BurnableToken.burn(value);
+        super.burn(value);
     }
 
     //when crowdfunding is finished, the transfer of coin is possible.
